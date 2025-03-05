@@ -14,6 +14,7 @@
           "NUnit3TestAdapter": "4.5.0",
           "Selenium.WebDriver": "4.28.0",
           "Selenium.WebDriver.ChromeDriver": "133.0.6943.12600",
+          "SeleniumExtras.WaitHelpers": "1.0.2",
           "coverlet.collector": "6.0.0"
         },
         "runtime": {
@@ -326,6 +327,17 @@
         }
       },
       "Selenium.WebDriver.ChromeDriver/133.0.6943.12600": {},
+      "SeleniumExtras.WaitHelpers/1.0.2": {
+        "dependencies": {
+          "Selenium.WebDriver": "4.28.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/SeleniumExtras.WaitHelpers.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
+        }
+      },
       "System.Reflection.Metadata/1.6.0": {}
     }
   },
@@ -432,6 +444,13 @@
       "sha512": "sha512-eIpa+NH1FkLOrWE7KDFh5xcW/6zmum95PkSeqPzJbgnO3SCs318owzLw1KNnGPpOStRKyWvFREEEMvGtnAdSSg==",
       "path": "selenium.webdriver.chromedriver/133.0.6943.12600",
       "hashPath": "selenium.webdriver.chromedriver.133.0.6943.12600.nupkg.sha512"
+    },
+    "SeleniumExtras.WaitHelpers/1.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-de7m30nkZZLkfCncYBdluUpM27AR/Vkk4kiA4HRQbV+fZI3ps4qGIeJCuj8TAMXdMfQik5Rno8xPnFBIod+ebg==",
+      "path": "seleniumextras.waithelpers/1.0.2",
+      "hashPath": "seleniumextras.waithelpers.1.0.2.nupkg.sha512"
     },
     "System.Reflection.Metadata/1.6.0": {
       "type": "package",

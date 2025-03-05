@@ -102,3 +102,4 @@ C:\HUFLIT\3rd\3rd - Software Assuarance\ASC_Testing\obj\Debug\net8.0\refint\ASC_
 C:\HUFLIT\3rd\3rd - Software Assuarance\ASC_Testing\obj\Debug\net8.0\ASC_Testing.pdb
 C:\HUFLIT\3rd\3rd - Software Assuarance\ASC_Testing\obj\Debug\net8.0\ASC_Testing.genruntimeconfig.cache
 C:\HUFLIT\3rd\3rd - Software Assuarance\ASC_Testing\obj\Debug\net8.0\ref\ASC_Testing.dll
+C:\HUFLIT\3rd\3rd - Software Assuarance\ASC_Testing\bin\Debug\net8.0\SeleniumExtras.WaitHelpers.dll

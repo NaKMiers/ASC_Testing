@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qrFck024tUU=",
+  "dgSpecHash": "PQcWhZGLhnc=",
   "success": true,
   "projectFilePath": "C:\\HUFLIT\\3rd\\3rd - Software Assuarance\\ASC_Testing\\ASC_Testing.csproj",
   "expectedPackageFiles": [
@@ -18,6 +18,7 @@
     "C:\\Users\\diwas\\.nuget\\packages\\nunit3testadapter\\4.5.0\\nunit3testadapter.4.5.0.nupkg.sha512",
     "C:\\Users\\diwas\\.nuget\\packages\\selenium.webdriver\\4.28.0\\selenium.webdriver.4.28.0.nupkg.sha512",
     "C:\\Users\\diwas\\.nuget\\packages\\selenium.webdriver.chromedriver\\133.0.6943.12600\\selenium.webdriver.chromedriver.133.0.6943.12600.nupkg.sha512",
+    "C:\\Users\\diwas\\.nuget\\packages\\seleniumextras.waithelpers\\1.0.2\\seleniumextras.waithelpers.1.0.2.nupkg.sha512",
     "C:\\Users\\diwas\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512"
   ],
   "logs": []
