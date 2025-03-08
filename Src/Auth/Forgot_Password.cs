@@ -28,6 +28,32 @@ public class View_ProductPage
 
   [Test]
   [Category("Forgot_Password_Fail")]
+  [TestCase("")]
+  public void Forgot_Password_Fail_EmailEmpty(string email)
+  {
+    ForgotPassword(email);
+
+    try
+    {
+      string currentUrl = driver.Url;
+      var emailInput = driver.FindElement(By.Id("email"));
+      bool isFocused = emailInput.Equals(driver.SwitchTo().ActiveElement());
+
+      Assert.Multiple(() =>
+      {
+        Assert.That(currentUrl, Is.EqualTo(Constants.BASE_URL + "/auth/forgot-password"), "Current URL is not correct.");
+        Assert.That(isFocused, Is.True, "Email input is not focused.");
+      });
+
+    }
+    catch (NoSuchElementException)
+    {
+      Assert.Fail("Error message element was not found.");
+    }
+  }
+
+  [Test]
+  [Category("Forgot_Password_Fail")]
   [TestCase("xxxxx@xxx.xxx")]
   public void Forgot_Password_Fail_EmailNotExists(string email)
   {
