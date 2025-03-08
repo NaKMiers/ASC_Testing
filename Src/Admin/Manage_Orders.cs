@@ -4,6 +4,7 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Interactions;
 using SeleniumExtras.WaitHelpers;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace ASC_Testing.Src.Admin;
 
@@ -320,24 +321,215 @@ public class Manage_Orders
     AdminLogin();
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
 
-    // click on deliver button of the first order
+    // click on delete button of the first order
     driver.FindElement(By.XPath("//button[@title='Deliver']")).Click();
-    driver.FindElement(By.CssSelector(".fixed:nth-child(2) .rounded-lg:nth-child(2)")).Click();
-    Thread.Sleep(10000);
+    driver.FindElement(By.CssSelector(".border-yellow-500")).Click();
+    Thread.Sleep(5000);
 
     try
     {
-      var successMessage = wait.Until(driver =>
-          driver.FindElement(By.ClassName("go2072408551"))
-      );
-
-      Assert.That(successMessage.Text, Does.Contain("been delivered"));
+      var successMessage = wait.Until(driver => driver.FindElement(By.ClassName("go2072408551")));
+      Assert.That(successMessage.Text, Does.Contain("Deliver Order Successfully"));
     }
     catch (NoSuchElementException)
     {
-      Assert.Fail("Error message element was not found.");
+      Assert.Fail("Success message element was not found.");
     }
   }
+
+  [Test] // T31.11.1
+  [Category("Redeliver_Orders")]
+  public void Redeliver_Orders_NoMessage()
+  {
+    AdminLogin();
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    // click on delete button of the first order
+    driver.FindElement(By.XPath("//button[@title='Re-Deliver']")).Click();
+    driver.FindElement(By.CssSelector(".border-sky-500")).Click();
+    Thread.Sleep(2000);
+
+    try
+    {
+      var successMessage = wait.Until(driver => driver.FindElement(By.ClassName("go2072408551")));
+      Assert.That(successMessage.Text, Does.Contain("Re-deliver Order Successfully!"));
+    }
+    catch (NoSuchElementException)
+    {
+      Assert.Fail("Success message element was not found.");
+    }
+  }
+
+  [Test] // T31.12.1
+  [Category("Edit_OrderDetails")]
+  public void View_OrderDetails()
+  {
+    AdminLogin();
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    // click on the view icon of the first order
+    driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
+
+    try
+    {
+      wait.Until(driver => !driver.Url.Contains("/all"));
+      Assert.That(Regex.IsMatch(driver.Url, Constants.BASE_URL + @"/admin/order/[A-Za-z0-9]{5}$"), Is.True, "Cannot view order details");
+    }
+    catch (WebDriverTimeoutException)
+    {
+      Assert.Fail("View failed");
+    }
+  }
+
+  [Test]
+  [Category("Edit_OrderDetails")]
+  [TestCase("createdAt")] // T31.12.2
+  [TestCase("email")] // T31.12.3
+  [TestCase("total")] // T31.12.4
+  [TestCase("total", "0")] // T31.12.5
+  public void Edit_OrderDetails_Fail_Field_EmptyOrZero(string inputId, string value = "")
+  {
+    AdminLogin();
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    // click on the view icon of the first order
+    driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
+    wait.Until(driver => !driver.Url.Contains("/all"));
+
+    // click on the edit button
+    driver.FindElement(By.CssSelector("button.text-secondary")).Click();
+    Thread.Sleep(1000);
+
+    var input = driver.FindElement(By.Id(inputId));
+    input.Clear();
+    if (value != "") input.SendKeys(value);
+    Thread.Sleep(1000);
+
+    // click on save button
+    driver.FindElement(By.CssSelector("button.text-rose-500")).Click();
+
+    try
+    {
+      // if cursor is focused on the createdAt input is pass
+      var activeElement = driver.SwitchTo().ActiveElement();
+      wait.Until(driver => input.Equals(activeElement));
+      Assert.That(input, Is.EqualTo(activeElement));
+    }
+    catch (WebDriverTimeoutException)
+    {
+      Assert.Fail("Edit failed");
+    }
+  }
+
+  [Test] // T31.12.6
+  [Category("Edit_OrderDetails")]
+  public void Edit_OrderDetails_Fail_Items_Empty()
+  {
+    AdminLogin();
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+    Thread.Sleep(1000);
+
+    // click on the view icon of the first order
+    driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
+    wait.Until(driver => !driver.Url.Contains("/all"));
+    Thread.Sleep(1000);
+
+    // click on the edit button
+    driver.FindElement(By.CssSelector("button.text-secondary")).Click();
+
+    Thread.Sleep(1000);
+    var removeItemButtons = driver.FindElements(By.CssSelector("button.h-6.border-rose-500.text-rose-500"));
+    foreach (var button in removeItemButtons)
+    {
+      button.Click();
+    }
+
+    // click on save button
+    Thread.Sleep(500);
+    driver.FindElement(By.CssSelector("button.text-rose-500")).Click();
+
+    try
+    {
+      var toast = wait.Until(driver => driver.FindElement(By.ClassName("go2072408551")));
+      Assert.That(toast.Text, Does.Contain("Order items cannot be empty"));
+    }
+    catch (WebDriverTimeoutException)
+    {
+      Assert.Fail("Edit failed");
+    }
+  }
+
+  [Test]
+  [Category("Edit_OrderDetails")]
+  [TestCase("22/02/2025 12:00", "pending", "user123@gmail.com", 30000)] // T31.12.7
+  public void Edit_OrderDetails_Success(string? date, string? status, string? email, double? total)
+  {
+    AdminLogin();
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    // click on the view icon of the first order
+    driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
+    wait.Until(driver => !driver.Url.Contains("/all"));
+    Thread.Sleep(1000);
+
+    // click on the edit button
+    driver.FindElement(By.CssSelector("button.text-secondary")).Click();
+
+    // update date
+    if (date != null && date != "")
+    {
+      Thread.Sleep(1000);
+      DateTime filterDate = DateTime.ParseExact(date, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+      IWebElement input = driver.FindElement(By.Id("createdAt"));
+      string buyDate = filterDate.ToString("yyyy-MM-ddTHH:mm");
+      driver.ExecuteScript("arguments[0].value = arguments[1];", input, buyDate);
+      input.SendKeys(Keys.ArrowRight);
+      input.SendKeys(Keys.Enter);
+    }
+
+    // update status
+    if (status != null && status != "")
+    {
+      IWebElement dropdown = driver.FindElement(By.Id("status"));
+      dropdown.Click();
+      IWebElement option = dropdown.FindElement(By.XPath($".//option[@value='{status}']"));
+      option.Click();
+    }
+
+    // update email
+    if (email != null && email != "")
+    {
+      Thread.Sleep(1000);
+      var input = driver.FindElement(By.Id("email"));
+      input.Clear();
+      input.SendKeys(email);
+    }
+
+    // update total
+    if (total != null && total != 0)
+    {
+      Thread.Sleep(1000);
+      var input = driver.FindElement(By.Id("total"));
+      input.Clear();
+      input.SendKeys(total.ToString());
+    }
+
+    // click on save button
+    Thread.Sleep(1000);
+    driver.FindElement(By.CssSelector("button.text-rose-500")).Click();
+    Thread.Sleep(2000);
+
+    try
+    {
+      var toast = wait.Until(driver => driver.FindElement(By.ClassName("go2072408551")));
+      Assert.That(toast.Text, Does.Contain("Order has been updated"));
+    }
+    catch (WebDriverTimeoutException)
+    {
+      Assert.Fail("Edit failed");
+    }
+  }
+
 
   [Test] // T31.13.1
   [Category("Order_Quick_Search")]
