@@ -1,6 +1,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 
 namespace ASC_Testing.Src.NonUser;
 
@@ -26,6 +27,15 @@ public class View_ProductPage
     {
         driver.Navigate().GoToUrl(slug);
         Assert.That(driver.FindElement(By.XPath("//h1[text()='Không tìm thấy sản phẩm.']")).Displayed, Is.True);
+    }
+
+    [Test]
+    [Category("View_ProductPage_Success")]
+    public void View_ProductPage_Success()
+    {
+        driver.Navigate().GoToUrl(Constants.BASE_URL + "/netflix-premium-1-tuan-sieu-net-sieu-tien-loi");
+        wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("body")));
+        Thread.Sleep(2000);
     }
 
     [TearDown]
