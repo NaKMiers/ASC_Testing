@@ -13,11 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ASC_Testing")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5cea632e6d6cc7b36c0e2f39dab357934354d2cb")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c36913d687b25aaccacf69471d1b2d4ff69a4be")]
->>>>>>> 61ec842 (Thêm folder Auth vào nhánh phong)
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bb9b79b11cbcbdc317e1f1d2b4e757b708a215f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ASC_Testing")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ASC_Testing")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
