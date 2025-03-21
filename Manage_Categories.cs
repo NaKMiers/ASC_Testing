@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-using NUnit.Framework;
-using System;
-using System.IO;
 using OfficeOpenXml;
 
 namespace Testdoan

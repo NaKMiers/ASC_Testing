@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
-using System;
-using System.Threading;
-using NUnit.Framework;
 using SeleniumExtras.WaitHelpers;
 
 namespace ASC_Testing.Src.Auth
