@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -7,596 +7,253 @@ using System.Threading;
 
 namespace TestProject1
 {
-    public class Manage_FlashSales
+
+
+
+    public class Manage_FlashSales_Tests
     {
-        private ChromeDriver driver;
-        private string base_url;
-        private readonly string BASE_URL = "https://asclone.vercel.app";
-
-        [SetUp]
-        public void Setup()
-        {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(BASE_URL);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-
-            /
-            login("phanthang", "phanthang01");
-           
-            driver.Navigate().GoToUrl(base_url + "/admin/flash-sale");
-
-
-            
-            Login("phanthang", "Phanthang01");
-            
-            driver.Navigate().GoToUrl(BASE_URL + "/admin/products");
-        }
-
-        private void login(string v1, string v2)
-        {
-            throw new NotImplementedException();
-        }
+        private IWebDriver? driver;
+        private readonly string BASE_URL = "https://anphashop-clone.vercel.app";
 
         private void Login(string usernameOrEmail, string password)
         {
+            if (driver == null) throw new NullReferenceException("Driver is not initialized.");
+
             driver.Navigate().GoToUrl(BASE_URL + "/auth/login");
             driver.FindElement(By.Id("usernameOrEmail")).SendKeys(usernameOrEmail);
             driver.FindElement(By.Id("password")).SendKeys(password);
             driver.FindElement(By.XPath("//button[text()='Đăng nhập']")).Click();
-            Thread.Sleep(2000);
+
+            new WebDriverWait(driver, TimeSpan.FromSeconds(5))
+                .Until(drv => drv.FindElement(By.XPath("//div[@role='status']")) != null);
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--start-maximized");
+            chromeOptions.AddArgument("--disable-notifications");
+
+            driver = new ChromeDriver(chromeOptions);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
         }
 
         [Test]
-        public void Add_FlashSale_Valid_FixedReduce_Value()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Percentage_Value_Not_Include_Percent(string username, string password)
         {
-            try
-            {
-               
-                driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
-
-               
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
-
-               
-                var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-                typeDropdown.SelectByText("Fixed Reduce");
-
-                
-                var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-                valueInput.Clear();
-                valueInput.SendKeys("10000");
-
-                
-                var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-                beginInput.Clear();
-                beginInput.SendKeys("22/02/2025 12:00");
-
-                var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-                timeTypeDropdown.SelectByText("loop");
-
-                
-                var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-                durationInput.Clear();
-                durationInput.SendKeys("120");
-
-                
-                var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-                addButton.Click();
-
-                
-                Thread.Sleep(2000); // Wait for success message or redirection
-                var successMessage = wait.Until(driver => driver.FindElement(By.XPath("//div[@role='status']")));
-                Assert.That(successMessage.Text, Is.EqualTo("Flash sale added successfully"));
-            }
-            catch (NoSuchElementException ex)
-            {
-                Assert.Fail($"Element not found: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail($"An error occurred: {ex.Message}");
-            }
-        }
-
-        [Test]
-        public void Add_FlashSale_Invalid_FixedReduce_Value_Not_A_Number()
-        {
-            try
-            {
-                
-                driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
-
-               
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
-
-                
-                var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-                typeDropdown.SelectByText("Fixed Reduce");
-
-                
-                var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-                valueInput.Clear();
-                valueInput.SendKeys("xxxxxx");
-
-                
-                var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-                beginInput.Clear();
-                beginInput.SendKeys("22/02/2025 12:00");
-
-                
-                var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-                timeTypeDropdown.SelectByText("loop");
-
-               
-                var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-                durationInput.Clear();
-                durationInput.SendKeys("120");
-
-                
-                var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-                addButton.Click();
-
-                
-                var errorMessage = wait.Until(driver => driver.FindElement(By.Id("value-error")));
-                Assert.That(errorMessage.Text, Is.EqualTo("Value must be a number"));
-            }
-            catch (NoSuchElementException ex)
-            {
-                Assert.Fail($"Element not found: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail($"An error occurred: {ex.Message}");
-            }
-        }
-
-        [Test]
-        public void Add_FlashSale_Invalid_FixedReduce_Value_Not_A_Minus_Number()
-        {
-            try
-            {
-                
-                driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
-
-                
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
-
-                
-                var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-                typeDropdown.SelectByText("Fixed Reduce");
-
-                
-                var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-                valueInput.Clear();
-                valueInput.SendKeys("-10000");
-
-               
-                var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-                beginInput.Clear();
-                beginInput.SendKeys("22/02/2025 12:00");
-
-                
-                var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-                timeTypeDropdown.SelectByText("loop");
-
-                
-                var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-                durationInput.Clear();
-                durationInput.SendKeys("120");
-
-                
-                var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-                addButton.Click();
-
-                
-                var errorMessage = wait.Until(driver => driver.FindElement(By.Id("value-error")));
-                Assert.That(errorMessage.Text, Is.EqualTo("Value must be a positive number"));
-            }
-            catch (NoSuchElementException ex)
-            {
-                Assert.Fail($"Element not found: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail($"An error occurred: {ex.Message}");
-            }
-        }
-
-        [Test]
-        public void Add_FlashSale_Invalid_Fixed_Value_Not_A_Number()
-        {
-           
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("fixed");
+            wait.Until(drv => drv.FindElement(By.Id("type"))).SendKeys("percentage");
+            wait.Until(drv => drv.FindElement(By.Id("value"))).SendKeys("10");
+            wait.Until(drv => drv.FindElement(By.Id("begin"))).SendKeys("22/02/2025 12:00");
+            wait.Until(drv => drv.FindElement(By.Id("timeType"))).SendKeys("loop");
+            wait.Until(drv => drv.FindElement(By.Id("duration"))).SendKeys("120");
 
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("xxxxxx");
+            wait.Until(drv => drv.FindElement(By.XPath("//button[text()='Add']"))).Click();
 
-           
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("loop");
-
-            
-            var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-            durationInput.Clear();
-            durationInput.SendKeys("120");
-
-           
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("value-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Value must be a number"));
+            var errorMessage = wait.Until(drv => drv.FindElement(By.ClassName("error-message"))).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at value input"));
         }
 
-
         [Test]
-        public void Add_FlashSale_Invalid_Fixed_Value_Minus()
+        [TestCase("phanthang", "Phanthang01")]
+        public void AddFlashSaleInvalidFixedReduceValueNotANumber(string username, string password)
         {
-            
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed-reduce");
+            driver.FindElement(By.Id("value")).SendKeys("xxxxxx");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("120");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("fixed");
-
-           
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("-10000");
-
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("loop");
-
-          
-            var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-            durationInput.Clear();
-            durationInput.SendKeys("120");
-
-            
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("value-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Value must be a positive number"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at value input"));
         }
 
-
-
-        /// //////////////////////
-
-
-
         [Test]
-        public void Add_FlashSale_Invalid_Begin_Empty()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_FixedReduce_Value_Not_A_Minus_Number(string username, string password)
         {
-          
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed-reduce");
+            driver.FindElement(By.Id("value")).SendKeys("10000");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("120");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("percentage");
-
-           
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("10%");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("loop");
-
-            
-            var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-            durationInput.Clear();
-            durationInput.SendKeys("120");
-
-            
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("begin-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Begin date is required"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at value input"));
         }
 
-
-
-        /// ///////////////////////
-
-
-
         [Test]
-        public void Add_FlashSale_Invalid_Loop_Duration_Empty()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_FixedReduce_Value_Not_A_Number(string username, string password)
         {
-            
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-           
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed");
+            driver.FindElement(By.Id("value")).SendKeys("xxxxxx");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("120");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("fixed");
-
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("-10000");
-
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("loop");
-
-            // 6. Click add button
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            // Verify error message at duration input
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("duration-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Duration is required"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at value input"));
         }
 
-
-
-
-
-        /// ////////////////////////
-
-
         [Test]
-        public void Add_FlashSale_Invalid_Loop_Duration_0()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Fixed_Value_Minus(string username, string password)
         {
-            
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed");
+            driver.FindElement(By.Id("value")).SendKeys("-10000");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("120");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-           
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("fixed");
-
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("-10000");
-
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("loop");
-
-            
-            var durationInput = wait.Until(driver => driver.FindElement(By.Id("duration")));
-            durationInput.Clear();
-            durationInput.SendKeys("0");
-
-            
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("duration-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Duration must be greater than 0"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at value input"));
         }
 
-
-        /// ////////////////////////////////
         [Test]
-        public void Add_FlashSale_Invalid_Once_Expire_Empty()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Begin_Empty(string username, string password)
         {
-            
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("percentage");
+            driver.FindElement(By.Id("value")).SendKeys("10%");
+            driver.FindElement(By.Id("begin")).Clear();
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("120");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("fixed");
-
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("-10000");
-
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("once");
-
-           
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            // Verify error message at expire input
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("expire-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Expire date is required"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at begin input"));
         }
 
-
-
-        /// ///////////////////////////
-
-
         [Test]
-        public void Add_FlashSale_Invalid_Once_Expire_LTE_Begin()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Loop_Duration_Empty(string username, string password)
         {
-           
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-           
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed");
+            driver.FindElement(By.Id("value")).SendKeys("-10000");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).Clear();
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("percentage");
-
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("10%");
-
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
-
-           
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("once");
-
-            
-            var expireInput = wait.Until(driver => driver.FindElement(By.Id("expire")));
-            expireInput.Clear();
-            expireInput.SendKeys("10/02/2024 12:00");
-
-            
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            // Verify error message at expire input
-            var errorMessage = wait.Until(driver => driver.FindElement(By.Id("expire-error")));
-            Assert.That(errorMessage.Text, Is.EqualTo("Expire date must be greater than begin date"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at duration input"));
         }
 
 
-
-        /// <summary>
-        /// //////////////////////////////////////////
-        /// </summary>
-
         [Test]
-        public void Add_FlashSale_Valid()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Loop_Duration_0(string username, string password)
         {
-           
+            Login(username, password);
             driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("fixed");
+            driver.FindElement(By.Id("value")).SendKeys("-10000");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("loop");
+            driver.FindElement(By.Id("duration")).SendKeys("0");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            var typeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("type"))));
-            typeDropdown.SelectByText("percentage");
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at duration input"));
+        }
 
-            
-            var valueInput = wait.Until(driver => driver.FindElement(By.Id("value")));
-            valueInput.Clear();
-            valueInput.SendKeys("10%");
 
-            
-            var beginInput = wait.Until(driver => driver.FindElement(By.Id("begin")));
-            beginInput.Clear();
-            beginInput.SendKeys("22/02/2025 12:00");
 
-            
-            var timeTypeDropdown = new SelectElement(wait.Until(driver => driver.FindElement(By.Id("timeType"))));
-            timeTypeDropdown.SelectByText("once");
+        [Test]
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Once_Expire_Empty(string username, string password)
+        {
+            Login(username, password);
+            driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            var expireInput = wait.Until(driver => driver.FindElement(By.Id("expire")));
-            expireInput.Clear();
-            expireInput.SendKeys("28/02/2025 12:00");
+            driver.FindElement(By.Id("type")).SendKeys("fixed");
+            driver.FindElement(By.Id("value")).SendKeys("-10000");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("once");
+            driver.FindElement(By.Id("expire")).Clear();
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-            
-            var addButton = wait.Until(driver => driver.FindElement(By.XPath("//button[text()='Add']")));
-            addButton.Click();
-
-            
-            var successMessage = wait.Until(driver => driver.FindElement(By.XPath("//div[@role='status']")));
-            Assert.That(successMessage.Text, Is.EqualTo("Flash sale added successfully"));
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at expire input"));
         }
 
 
         [Test]
-        public void Add_Product_Invalid_Title_Empty()
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Invalid_Once_Expire_LTE_Empty(string username, string password)
         {
-          
-            var addProductButton = driver.FindElement(By.Id("addProductButton")); // Giả sử nút "Add Product" có ID là "addProductButton"
-            addProductButton.Click();
+            Login(username, password);
+            driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
 
-            
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            driver.FindElement(By.Id("type")).SendKeys("percentage");
+            driver.FindElement(By.Id("value")).SendKeys("10%");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("once");
+            driver.FindElement(By.Id("expire")).Clear();
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
 
-           
-            var priceInput = driver.FindElement(By.Id("price"));
-            priceInput.Clear();
-            priceInput.SendKeys("100000");
-
-            
-            var oldPriceInput = driver.FindElement(By.Id("oldPrice"));
-            oldPriceInput.Clear();
-            oldPriceInput.SendKeys("500000");
-
-           
-            var tagsInput = driver.FindElement(By.Id("tags"));
-            tagsInput.SendKeys("Xem phim, Giải trí");
-
-            
-            var categoriesDropdown = new SelectElement(driver.FindElement(By.Id("categories")));
-            categoriesDropdown.SelectByText("Netflix");
-
-            
-            var imageInput = driver.FindElement(By.Id("image"));
-            imageInput.SendKeys("C:\\path\\to\\file.png"); // Thay thế bằng đường dẫn thực tế đến file ảnh
-
-           
-            var addButton = driver.FindElement(By.Id("addButton")); // Giả sử nút "Add" có ID là "addButton"
-            addButton.Click();
-
-            // Verify that the Title input is auto-focused
-            var titleInput = driver.FindElement(By.Id("title"));
-            bool isTitleFocused = titleInput.Equals(driver.SwitchTo().ActiveElement());
-            Assert.IsTrue(isTitleFocused, "Title input should be auto-focused");
+            var errorMessage = driver.FindElement(By.ClassName("error-message")).Text;
+            Assert.That(errorMessage, Is.EqualTo("Show error message at expire input"));
         }
+
+        [Test]
+        [TestCase("phanthang", "Phanthang01")]
+        public void Add_FlashSale_Valid(string username, string password)
+        {
+            Login(username, password);
+            driver.Navigate().GoToUrl(BASE_URL + "/admin/flash-sale/add");
+
+            driver.FindElement(By.Id("type")).SendKeys("percentage");
+            driver.FindElement(By.Id("value")).SendKeys("10%");
+            driver.FindElement(By.Id("begin")).SendKeys("22/02/2025 12:00");
+            driver.FindElement(By.Id("timeType")).SendKeys("once");
+            driver.FindElement(By.Id("expire")).SendKeys("28/02/2025 12:00");
+            driver.FindElement(By.XPath("//button[text()='Add']")).Click();
+
+            var successMessage = driver.FindElement(By.ClassName("success-message")).Text;
+            Assert.That(successMessage, Is.EqualTo("Show success message"));
+        }
+
+
 
 
 
         [TearDown]
         public void TearDown()
         {
-            Thread.Sleep(1000);
-            driver.Quit();
-            driver.Dispose();
+            Thread.Sleep(8000);
+            driver?.Quit();
+            driver?.Dispose();
         }
     }
 }
