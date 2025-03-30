@@ -33,10 +33,14 @@ namespace ASC_Testing.Src.NonUser
         [Category("BuyNow_At_ProductCard_Success")]
         public void BuyNow_At_ProductCard_Success()
         {
-            driver.Navigate().GoToUrl(Constants.BASE_URL + "/youtube-premium-youtube-music-no-ads-1-nam-giai-tri-ca-nam-khong-lo-quang-cao");
+            driver.Navigate().GoToUrl(Constants.BASE_URL + "/random-grammarly-may-man-luon-den-voi-nguoi-cham-chi");
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("body")));
-            driver.FindElement(By.CssSelector("button[class='trans-200 rounded-md bg-secondary px-3 py-[5px] font-body text-xl font-semibold text-white hover:bg-primary ']")).Click();
+            var buyNowButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//button[contains(text(),'MUA NGAY')]")));
+            buyNowButton.Click();
             Thread.Sleep(2000);
+            var cartQuantityElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("span[class='font-normal text-primary']")));
+            int cartQuantity = int.Parse(cartQuantityElement.Text);
+            Assert.That(cartQuantity, Is.GreaterThan(0), "Product was not added to the cart successfully.");
         }
 
         [Test]
@@ -53,10 +57,14 @@ namespace ASC_Testing.Src.NonUser
         [Category("BuyNow_At_CarouselCard_Success")]
         public void BuyNow_At_CarouselCard_Success()
         {
-            driver.Navigate().GoToUrl(Constants.BASE_URL + "/canva-pro-6-thang-sang-tao-chuyen-nghiep-thiet-ke-vo-song");
+            driver.Navigate().GoToUrl(Constants.BASE_URL + "/random-grammarly-may-man-luon-den-voi-nguoi-cham-chi");
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("body")));
-            driver.FindElement(By.CssSelector("button[class='trans-200 rounded-md bg-secondary px-3 py-[5px] font-body text-xl font-semibold text-white hover:bg-primary ']")).Click();
+            var buyNowButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//button[contains(text(),'MUA NGAY')]")));
+            buyNowButton.Click();
             Thread.Sleep(2000);
+            var cartQuantityElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("span[class='font-normal text-primary']")));
+            int cartQuantity = int.Parse(cartQuantityElement.Text);
+            Assert.That(cartQuantity, Is.GreaterThan(0), "Product was not added to the cart successfully.");
         }
 
         [Test]
@@ -73,10 +81,14 @@ namespace ASC_Testing.Src.NonUser
         [Category("BuyNow_At_ProductPage_Success")]
         public void BuyNow_At_ProductPage_Success()
         {
-            driver.Navigate().GoToUrl(Constants.BASE_URL + "/microsoft-office-365-1-nam-khoi-day-cam-hung-hien-thuc-hoa-y-tuong");
+            driver.Navigate().GoToUrl(Constants.BASE_URL + "/random-grammarly-may-man-luon-den-voi-nguoi-cham-chi");
             wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("body")));
-            driver.FindElement(By.CssSelector("button[class='trans-200 rounded-md bg-secondary px-3 py-[5px] font-body text-xl font-semibold text-white hover:bg-primary ']")).Click();
+            var buyNowButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//button[contains(text(),'MUA NGAY')]")));
+            buyNowButton.Click();
             Thread.Sleep(2000);
+            var cartQuantityElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("span[class='font-normal text-primary']")));
+            int cartQuantity = int.Parse(cartQuantityElement.Text);
+            Assert.That(cartQuantity, Is.GreaterThan(0), "Product was not added to the cart successfully.");
         }
 
         [TearDown]
