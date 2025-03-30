@@ -19,7 +19,7 @@ public class View_ProductPage
     wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
   }
 
-  private void ForgotPassword(string email)
+  private void ForgotPassword(string email = "")
   {
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/auth/forgot-password");
     driver.FindElement(By.Id("email")).SendKeys(email);
@@ -28,10 +28,9 @@ public class View_ProductPage
 
   [Test]
   [Category("Forgot_Password_Fail")]
-  [TestCase("")]
-  public void Forgot_Password_Fail_EmailEmpty(string email)
+  public void Forgot_Password_Fail_EmailEmpty()
   {
-    ForgotPassword(email);
+    ForgotPassword();
 
     try
     {
@@ -54,10 +53,11 @@ public class View_ProductPage
 
   [Test]
   [Category("Forgot_Password_Fail")]
-  [TestCase("xxxxx@xxx.xxx")]
-  public void Forgot_Password_Fail_EmailNotExists(string email)
+  [TestCase("khoa.json")]
+  public void Forgot_Password_Fail_EmailNotExists(string dataFile)
   {
-    ForgotPassword(email);
+    Dictionary<string, string> result = Files.Read(dataFile);
+    ForgotPassword(result["email"]);
 
     try
     {
@@ -75,10 +75,11 @@ public class View_ProductPage
 
   [Test]
   [Category("Forgot_Password_Fail")]
-  [TestCase("diwas118151@gmail.com")]
-  public void Forgot_Password_Fail_GoogleAuthType(string email)
+  [TestCase("khoa.json")]
+  public void Forgot_Password_Fail_GoogleAuthType(string dataFile)
   {
-    ForgotPassword(email);
+    Dictionary<string, string> result = Files.Read(dataFile);
+    ForgotPassword(result["email"]);
 
     try
     {
@@ -93,32 +94,6 @@ public class View_ProductPage
       Assert.Fail("Error message element was not found.");
     }
   }
-
-  // [Test]
-  // [Category("Forgot_Password_Success")]
-  // [TestCase("lxopersy@gmail.com")]
-  // public void Forgot_Password_Success(string email)
-  // {
-  //   ForgotPassword(email);
-
-  //   try
-  //   {
-  //     var toast = wait.Until(driver =>
-  //     {
-  //       var element = driver.FindElement(By.XPath("//div[@role='status']"));
-  //       return element.Text.Contains("Link khôi phục mật khẩu đã được gửi đến email của bạn") ? element : null;
-  //     });
-
-  //     Assert.That(toast.Displayed, Is.True, "Expected toast message is not displayed.");
-
-  //   }
-  //   catch (NoSuchElementException)
-  //   {
-  //     Assert.Fail("Error message element was not found.");
-  //   }
-  // }
-
-
 
   [TearDown]
   public void TearDown()

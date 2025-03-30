@@ -1,0 +1,80 @@
+{
+  "Login_Credentials_Fail_UsernameOrEmailEmpty": [{ "username": "", "password": "Asdasd@1" }],
+  "Login_Credentials_Fail_PasswordEmpty": [{ "username": "user123", "password": "" }],
+  "Login_Credentials_Fail_WrongUsername": [
+    { "username": "userxxx", "password": "Asdasd@11" },
+    { "username": "user123", "password": "xxxxxx" }
+  ],
+  "Login_Credentials_Success": [{ "username": "user123", "password": "Asdasd@1" }],
+  "Forgot_Password_Fail_GoogleAuthType": [{ "email": "diwas118151@gmail.com" }],
+  "View_ProductPage_Fail_DeactiveProduct": [
+    { "slug": "grammarly-ai-1-thang-tang-cao-hieu-suat-voi-ai" }
+  ],
+  "View_OrderManagementPage_With_QueryParams": [{ "query": "?sort=createdAt|1" }],
+  "Search_Orders_OrderManagementPage_Valid": [{ "search": "CA938" }],
+  "Filter_Orders_OrderManagementPage_FromTo": [
+    { "from": "22/02/2025 12:00", "to": "null" },
+    { "from": "null", "to": "22/02/2025 12:00" },
+    { "from": "22/02/2025 12:00", "to": "28/02/2025 12:00" }
+  ],
+  "Filter_Orders_OrderManagementPage_Selection": [
+    { "inputId": "userId", "value": "true", "isDefault": "false" },
+    { "inputId": "voucherApplied", "value": "true", "isDefault": "false" },
+    { "inputId": "status", "value": "pending", "isDefault": "false" },
+    { "inputId": "sort", "value": "updatedAt|-1", "isDefault": "true" },
+    { "inputId": "sort", "value": "updatedAt|1", "isDefault": "false" },
+    { "inputId": "sort", "value": "createdAt|-1", "isDefault": "false" },
+    { "inputId": "sort", "value": "createdAt|1", "isDefault": "false" }
+  ],
+  "Edit_OrderDetails_Fail_Field_EmptyOrZero": [
+    { "inputId": "createdAt", "value": "" },
+    { "inputId": "email", "value": "" },
+    { "inputId": "total", "value": "" },
+    { "inputId": "total", "value": "0" }
+  ],
+  "Edit_OrderDetails_Success": [
+    {
+      "date": "22/02/2025 12:00",
+      "status": "pending",
+      "email": "user123@gmail.com",
+      "total": "30000"
+    }
+  ],
+  "View_AccountManagementPage_With_QueryParams": [{ "query": "?sort=createdAt|1" }],
+  "Search_Accounts_AccountManagementPage_Valid": [{ "search": "@gmail" }],
+  "Filter_Accounts_AccountManagementPage_Type": [
+    { "type": "Netflix Premium (1 Tuần) - Siêu Nét, Siêu Tiện Lợi" }
+  ],
+  "Filter_Accounts_AccountManagementPage_Selection": [
+    { "inputId": "active", "value": "false", "isDefault": "false" },
+    { "inputId": "usingUser", "value": "true", "isDefault": "false" },
+    { "inputId": "expire", "value": "true", "isDefault": "false" },
+    { "inputId": "renew", "value": "true", "isDefault": "false" },
+    { "inputId": "sort", "value": "updatedAt|-1", "isDefault": "true" },
+    { "inputId": "sort", "value": "updatedAt|1", "isDefault": "false" },
+    { "inputId": "sort", "value": "createdAt|-1", "isDefault": "false" },
+    { "inputId": "sort", "value": "createdAt|1", "isDefault": "false" }
+  ],
+  "Filter_Accounts_AccountManagementPage_TypeAndDropdown": [
+    {
+      "type": "Netflix Premium (1 Tuần) - Siêu Nét, Siêu Tiện Lợi",
+      "dropdownId": "active",
+      "value": "false"
+    },
+    {
+      "type": "Netflix Premium (1 Tuần) - Siêu Nét, Siêu Tiện Lợi",
+      "dropdownId": "usingUser",
+      "value": "false"
+    },
+    {
+      "type": "Netflix Premium (1 Tuần) - Siêu Nét, Siêu Tiện Lợi",
+      "dropdownId": "expire",
+      "value": "true"
+    },
+    {
+      "type": "Netflix Premium (1 Tuần) - Siêu Nét, Siêu Tiện Lợi",
+      "dropdownId": "renew",
+      "value": "true"
+    }
+  ]
+}

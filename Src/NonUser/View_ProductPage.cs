@@ -22,18 +22,21 @@ public class View_ProductPage
 
     [Test]
     [Category("View_ProductPage_Fail")]
-    [TestCase("https://anphashop-clone.vercel.app/grammarly-ai-1-thang-tang-cao-hieu-suat-voi-ai")]
-    public void View_ProductPage_Fail_DeactiveProduct(string slug)
+    [TestCase("khoa.json")]
+    public void View_ProductPage_Fail_DeactiveProduct(string dataFile)
     {
-        driver.Navigate().GoToUrl(slug);
+        Dictionary<string, string> result = Files.Read(dataFile);
+
+        driver.Navigate().GoToUrl(Constants.BASE_URL + "/" + result["slug"]);
         Assert.That(driver.FindElement(By.XPath("//h1[text()='Không tìm thấy sản phẩm.']")).Displayed, Is.True);
     }
 
     [Test]
     [Category("View_ProductPage_Success")]
-    public void View_ProductPage_Success()
+    [TestCase("netflix-premium-1-tuan-sieu-net-sieu-tien-loi")]
+    public void View_ProductPage_Success(string slug)
     {
-        driver.Navigate().GoToUrl(Constants.BASE_URL + "/netflix-premium-1-tuan-sieu-net-sieu-tien-loi");
+        driver.Navigate().GoToUrl(Constants.BASE_URL + "/" + slug);
         wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("body")));
         Thread.Sleep(2000);
     }

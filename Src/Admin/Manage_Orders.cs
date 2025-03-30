@@ -57,17 +57,19 @@ public class Manage_Orders
   }
 
   [Category("View_OrderManagementPage_With_QueryParams")]
-  [TestCase("?sort=createdAt|1")] // T31.3.2
-  public void View_OrderManagementPage_With_QueryParams(string query)
+  [TestCase("khoa.json")] // T31.3.2
+  public void View_OrderManagementPage_With_QueryParams(string dataFile)
   {
     AdminLogin();
-    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all" + query);
+    Dictionary<string, string> result = Files.Read(dataFile);
+
+    driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all" + result["query"]);
 
     Assert.Multiple(
       () =>
       {
-        Assert.That(driver.Url, Is.EqualTo(Constants.BASE_URL + "/admin/order/all" + query));
-        Thread.Sleep(1000);
+        Assert.That(driver.Url, Is.EqualTo(Constants.BASE_URL + "/admin/order/all" + result["query"]));
+        Thread.Sleep(2000);
         Assert.That(driver.FindElement(By.Id("sort")).GetAttribute("value"), Is.EqualTo("createdAt|1"));
       }
     );
@@ -76,20 +78,21 @@ public class Manage_Orders
 
   [Test]
   [Category("Search_Orders_OrderManagementPage_Valid")]
-  [TestCase("CA938")] // T31.4.1
-  public void Search_Orders_OrderManagementPage_Valid(string search)
+  [TestCase("khoa.json")] // T31.4.1
+  public void Search_Orders_OrderManagementPage_Valid(string dataFile)
   {
     AdminLogin();
+    Dictionary<string, string> result = Files.Read(dataFile);
 
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
 
-    driver.FindElement(By.Id("search")).SendKeys(search);
+    driver.FindElement(By.Id("search")).SendKeys(result["search"]);
     Filter();
 
     try
     {
       wait.Until(ExpectedConditions.UrlContains("search="));
-      Assert.That(driver.Url, Is.EqualTo(Constants.BASE_URL + "/admin/order/all?search=" + search));
+      Assert.That(driver.Url, Is.EqualTo(Constants.BASE_URL + "/admin/order/all?search=" + result["search"]));
     }
     catch (WebDriverTimeoutException)
     {
@@ -99,13 +102,12 @@ public class Manage_Orders
 
   [Test] // T31.5.1
   [Category("Search_Orders_OrderManagementPage_Invalid")]
-  [TestCase("")]
-  public void Search_Orders_OrderManagementPage_Invalid_Empty(string search)
+  public void Search_Orders_OrderManagementPage_Invalid_Empty()
   {
     AdminLogin();
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
 
-    driver.FindElement(By.Id("search")).SendKeys(search);
+    driver.FindElement(By.Id("search")).SendKeys("");
     Filter();
 
     Assert.That(driver.Url, Is.EqualTo(Constants.BASE_URL + "/admin/order/all"));
@@ -142,29 +144,30 @@ public class Manage_Orders
 
   [Test]
   [Category("Filter_Orders_OrderManagementPage")]
-  [TestCase("22/02/2025 12:00", null)] // T31.6.2
-  [TestCase(null, "22/02/2025 12:00")] // T31.6.3
-  [TestCase("22/02/2025 12:00", "28/02/2025 12:00")] // T31.6.4
-  public void Filter_Orders_OrderManagementPage_FromTo(string? from, string? to)
+  [TestCase("khoa.json", 0)] // T31.6.2
+  [TestCase("khoa.json", 1)] // T31.6.3
+  [TestCase("khoa.json", 2)] // T31.6.4
+  public void Filter_Orders_OrderManagementPage_FromTo(string dataFile, int index)
   {
     AdminLogin();
+    Dictionary<string, string> result = Files.Read(dataFile, index);
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
 
     string fromDate = "";
     string toDate = "";
 
-    if (from != null)
+    if (result["from"] != "null")
     {
-      DateTime filterDate = DateTime.ParseExact(from, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+      DateTime filterDate = DateTime.ParseExact(result["from"], "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
       IWebElement input = driver.FindElement(By.Id("from"));
       fromDate = filterDate.ToString("yyyy-MM-ddTHH:mm");
       driver.ExecuteScript("arguments[0].value = arguments[1];", input, fromDate);
       input.SendKeys(Keys.ArrowRight);
       input.SendKeys(Keys.Enter);
     }
-    if (to != null)
+    if (result["to"] != "null")
     {
-      DateTime filterDate = DateTime.ParseExact(to, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+      DateTime filterDate = DateTime.ParseExact(result["to"], "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
       IWebElement input = driver.FindElement(By.Id("to"));
       toDate = filterDate.ToString("yyyy-MM-ddTHH:mm");
       driver.ExecuteScript("arguments[0].value = arguments[1];", input, toDate);
@@ -187,18 +190,24 @@ public class Manage_Orders
 
   [Test]
   [Category("Filter_Orders_OrderManagementPage")]
-  [TestCase("userId", "true")] // T31.6.5
-  [TestCase("voucherApplied", "true")] // T31.6.6
-  [TestCase("status", "pending")] // T31.6.7
+  [TestCase("khoa.json", 0)] // T31.6.5
+  [TestCase("khoa.json", 1)] // T31.6.6
+  [TestCase("khoa.json", 2)] // T31.6.7
   [Category("Sort_Orders_OrderManagementPage")]
-  [TestCase("sort", "updatedAt|-1", true)] // T31.7.1
-  [TestCase("sort", "updatedAt|1")] // T31.7.2
-  [TestCase("sort", "createdAt|-1")] // T31.7.3
-  [TestCase("sort", "createdAt|1")] // T31.7.4
-  public void Filter_Orders_OrderManagementPage_Selection(string inputId, string value, bool? isDefault = true)
+  [TestCase("khoa.json", 3)] // T31.7.1
+  [TestCase("khoa.json", 4)] // T31.7.2
+  [TestCase("khoa.json", 5)] // T31.7.3
+  [TestCase("khoa.json", 6)] // T31.7.4
+  public void Filter_Orders_OrderManagementPage_Selection(string dataFile, int index)
   {
     AdminLogin();
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    Dictionary<string, string> result = Files.Read(dataFile, index);
+    string inputId = result["inputId"];
+    string value = result["value"];
+    bool? isDefault = result["isDefault"] == "true";
+
 
     Thread.Sleep(500);
     IWebElement dropdown = driver.FindElement(By.Id(inputId));
@@ -383,14 +392,18 @@ public class Manage_Orders
 
   [Test]
   [Category("Edit_OrderDetails")]
-  [TestCase("createdAt")] // T31.12.2
-  [TestCase("email")] // T31.12.3
-  [TestCase("total")] // T31.12.4
-  [TestCase("total", "0")] // T31.12.5
-  public void Edit_OrderDetails_Fail_Field_EmptyOrZero(string inputId, string value = "")
+  [TestCase("khoa.json", 0)] // T31.12.2
+  [TestCase("khoa.json", 1)] // T31.12.3
+  [TestCase("khoa.json", 2)] // T31.12.4
+  [TestCase("khoa.json", 3)] // T31.12.5
+  public void Edit_OrderDetails_Fail_Field_EmptyOrZero(string dataFile, int index)
   {
     AdminLogin();
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    Dictionary<string, string> result = Files.Read(dataFile, index);
+    string inputId = result["inputId"];
+    string value = result["value"];
 
     // click on the view icon of the first order
     driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
@@ -461,11 +474,17 @@ public class Manage_Orders
 
   [Test]
   [Category("Edit_OrderDetails")]
-  [TestCase("22/02/2025 12:00", "pending", "user123@gmail.com", 30000)] // T31.12.7
-  public void Edit_OrderDetails_Success(string? date, string? status, string? email, double? total)
+  [TestCase("khoa.json")] // T31.12.7
+  public void Edit_OrderDetails_Success(string dataFile)
   {
     AdminLogin();
     driver.Navigate().GoToUrl(Constants.BASE_URL + "/admin/order/all");
+
+    Dictionary<string, string> result = Files.Read(dataFile, 0);
+    string date = result["date"];
+    string status = result["status"];
+    string email = result["email"];
+    double total = double.Parse(result["total"]);
 
     // click on the view icon of the first order
     driver.FindElement(By.XPath("//a[@title='Detail']")).Click();
@@ -506,7 +525,7 @@ public class Manage_Orders
     }
 
     // update total
-    if (total != null && total != 0)
+    if (total != 0)
     {
       Thread.Sleep(1000);
       var input = driver.FindElement(By.Id("total"));
